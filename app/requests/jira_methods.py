@@ -106,4 +106,3 @@ async def attach_file(upload_token: str, zd_id: str, response: Response):
     except aiohttp.ClientOSError:
         response.status_code = rs.status
         return dict(await rs.json())
-
