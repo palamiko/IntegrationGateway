@@ -1,0 +1,47 @@
+version: 1
+disable_existing_loggers: no
+
+
+formatters:
+    normalFormatter:
+        format: "[%(asctime)s][%(levelname)s] - %(message)s"
+    detailedFormatter:
+        format: "[%(asctime)s: %(levelname)s] <%(threadName)s> <PID %(process)d:%(processName)s> %(name)s.%(funcName)s(): %(message)s"
+
+handlers:
+    consoleHandler:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: normalFormatter
+        stream: ext://sys.stdout
+
+    detailedConsoleHandler:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: detailedFormatter
+        stream: ext://sys.stdout
+
+    detailedFileHandler:
+        class: logging.handlers.RotatingFileHandler
+        formatter: detailedFormatter
+        filename: ./integration_gw_debug.log
+        maxBytes: 50485760 # 50MB
+        backupCount: 5
+        encoding: utf8
+
+root:
+    level: INFO
+    handlers: [consoleHandler]
+    propagate: yes
+
+
+loggers:
+    root:
+        level: INFO
+        handlers: [consoleHandler, detailedFileHandler]
+        propagate: no
+
+    app:
+        level: DEBUG
+        handlers: [detailedConsoleHandler, detailedFileHandler]
+        propagate: no

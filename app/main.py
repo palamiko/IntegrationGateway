@@ -1,11 +1,21 @@
+import logging.config
+import random
+import string
+import time
 from typing import Annotated
 
 from fastapi import FastAPI, Response, status, UploadFile, Form
+from starlette.requests import Request
 
 from app.dto.request_models import Transition, Comment, Priority
 from app.requests.jira_methods import transition_commit, comment_add, priority_change, attach_file, sent_file_to_zd
+from app.util.funs import get_log_conf
 
 app = FastAPI()
+
+
+logging.config.dictConfig(get_log_conf())
+logger = logging.getLogger(__name__)
 
 
 @app.post('/api/v1/add/comment')
@@ -35,3 +45,21 @@ async def upload_file(file: UploadFile, zd_id: Annotated[str, Form()], response:
                       file_name: Annotated[str, Form()] = 'unknown'):
     upload_token = await sent_file_to_zd(file, file_name, response)
     return await attach_file(upload_token, zd_id, response)
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    idem = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    logger.info(f"rid={idem} start request path={request.url.path}")
+    start_time = time.time()
+
+    response = await call_next(request)
+
+    process_time = (time.time() - start_time) * 1000
+    formatted_process_time = '{0:.2f}'.format(process_time)
+    logger.info(f"rid={idem} completed_in={formatted_process_time}ms status_code={response.status_code}")
+
+    return response
+
+
+
