@@ -1,13 +1,9 @@
 from aiohttp import BasicAuth
 from pydantic import BaseSettings
 
-ERROR_MESSAGE = 'вы пытались выполнить операцию бизнес-процесса (В очереди) которая не действительна для ' \
-                'текущего состояния запроса'
-
 
 class Settings(BaseSettings):
     app_name: str = "IntegrationGateway"
-    headers: dict = {"Accept": "application/json", "Content-Type": "application/json"}
 
     jira_url: str = ''
     jira_login: str = ''

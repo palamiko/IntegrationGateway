@@ -4,11 +4,12 @@ import string
 import time
 from typing import Annotated
 
-from fastapi import FastAPI, Response, status, UploadFile, Form
-from starlette.requests import Request
+from fastapi import FastAPI, Response, status, UploadFile, Form, Request
+
 
 from app.dto.request_models import Transition, Comment, Priority
-from app.requests.jira_methods import transition_commit, comment_add, priority_change, attach_file, sent_file_to_zd
+from app.requests.jira_methods import transition_commit, comment_add, priority_change
+from app.requests.zendesk_methods import sent_file_to_zd, attach_file
 from app.util.funs import get_log_conf
 
 app = FastAPI()
