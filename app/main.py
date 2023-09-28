@@ -6,13 +6,13 @@ from typing import Annotated
 
 from fastapi import FastAPI, Response, status, UploadFile, Form, Request
 
-
+from app.conf.config import settings
 from app.dto.request_models import Transition, Comment, Priority
 from app.requests.jira_methods import transition_commit, comment_add, priority_change
 from app.requests.zendesk_methods import sent_file_to_zd, attach_file
 from app.util.funs import get_log_conf
 
-app = FastAPI()
+app = FastAPI(description=settings.app_name)
 
 
 logging.config.dictConfig(get_log_conf())
