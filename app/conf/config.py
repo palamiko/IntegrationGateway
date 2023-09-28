@@ -5,19 +5,27 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     app_name: str = "IntegrationGateway"
 
-    jira_url: str = 'https://support.ai-mark.info'
-    jira_login: str = 'support_l3'
-    jira_pass: str = 'Ya4ScWZ8'
+    jira_url: str = ''
+    jira_login: str = ''
+    jira_pass: str = ''
 
-    zendesk_url: str = 'https://turon.zendesk.com'
-    zendesk_login: str = 'n.kiselev@ai-mark.ru/token'
-    zendesk_pass: str = '5E6EvFz2KpPFx9nUzxcSGdliutX2ruwa5TkUVYJn'
+    zendesk_url: str = ''
+    zendesk_login: str = ''
+    zendesk_pass: str = ''
+
+    proxy_url: str | None = None
+    proxy_login: str | None = None
+    proxy_pass: str | None = None
 
     def jira_auth(self):
         return BasicAuth(self.jira_login, self.jira_pass)
 
     def zd_auth(self):
         return BasicAuth(self.zendesk_login, self.zendesk_pass)
+
+    def proxy_auth(self) -> BasicAuth | None:
+        if self.proxy_login is not None and self.proxy_pass is not None:
+            return BasicAuth(self.proxy_login, self.proxy_pass)
 
 
 settings = Settings()

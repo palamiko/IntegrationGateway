@@ -19,7 +19,10 @@ async def sent_file_to_zd(file: UploadFile, name, response: Response) -> dict[An
         async with aiohttp.ClientSession(headers=headers, auth=settings.zd_auth()) as session:
             async with session.post(url=f'{settings.zendesk_url}/api/v2/uploads.json',
                                     data=file.file,
-                                    params=params) as rs:
+                                    params=params,
+                                    proxy=settings.proxy_url,
+                                    proxy_auth=settings.proxy_auth()
+                                    ) as rs:
                 logger.info(f'{rs.request_info.url} {rs.status}')
                 logger.debug(f'status {rs.status}' + await rs.text())
 
@@ -48,7 +51,9 @@ async def attach_file(upload_token: str, zd_id: str, response: Response):
                 }
             }
             async with session.put(url=f'{settings.zendesk_url}/api/v2/tickets/{zd_id}',
-                                   data=json.dumps(payload)) as rs:
+                                   data=json.dumps(payload),
+                                   proxy=settings.proxy_url,
+                                   proxy_auth=settings.proxy_auth()) as rs:
                 logger.info(f'{rs.request_info.url} {rs.status}')
                 logger.debug(f'status {rs.status}' + await rs.text())
 

@@ -31,7 +31,8 @@ async def change_status(transition: Transition, response: Response):
     if result == status.HTTP_400_BAD_REQUEST and try_count == 0:
         try_count += 1
         transition.id = 931
-        await transition_commit(transition, response)
+        result = await transition_commit(transition, response)
+        return result
     else:
         return result
 
